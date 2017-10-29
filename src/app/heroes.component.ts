@@ -4,12 +4,13 @@ import { Router } from '@angular/router';
 
 import { Store } from '@ngrx/store';
 
+import { Observable } from 'rxjs/Observable';
+
 import { Hero } from './hero';
 import { HeroService } from './hero.service';
 
-interface AppState {
-  heroes: Hero[];
-}
+import * as fromRoot from './reducers';
+import { HeroesLoadAction } from './actions/heroes';
 
 @Component({
   selector: 'my-heroes',
@@ -18,21 +19,18 @@ interface AppState {
 })
 
 export class HeroesComponent implements OnInit {
+  public heroes$: Observable<Hero[]>;
   heroes: Hero[];
   selectedHero: Hero;
 
-  constructor(
-    private router: Router,
-    private heroService: HeroService) { }
-
-  getHeroes(): void {
-    this.heroService
-      .getHeroes()
-      .then(heroes => this.heroes = heroes);
+  constructor(private router: Router,
+              private heroService: HeroService,
+              public store: Store<fromRoot.State>) {
+    this.heroes$ = store.select(fromRoot.getHeroesState);
   }
 
   ngOnInit(): void {
-    this.getHeroes();
+    this.store.dispatch(new HeroesLoadAction());
   }
 
   onSelect(hero: Hero): void {
@@ -57,7 +55,7 @@ export class HeroesComponent implements OnInit {
           if (this.selectedHero === hero) { this.selectedHero = null; }
         });
   }
- 
+
   gotoDetail(): void {
     this.router.navigate(['/detail', this.selectedHero.id]);
   }
