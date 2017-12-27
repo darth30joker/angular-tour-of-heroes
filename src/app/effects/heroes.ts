@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { Action } from '@ngrx/store';
-import { Actions, Effect } from '@ngrx/effects';
+import { Actions, Effect, toPayload } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
 
@@ -20,7 +20,8 @@ export class HeroesEffects {
   @Effect()
   loadHero$: Observable<Action> = this.actions$
     .ofType(heroes.HERO_LOAD)
-    .switchMap(() => this.service.getHero(0)
+    .map(toPayload)
+    .switchMap((payload) => this.service.getHero(payload)
       .map(data => new heroes.HeroLoadedAction(data)));
 
   @Effect()

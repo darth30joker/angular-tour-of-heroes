@@ -17,7 +17,7 @@ export class HeroService {
 
   getHeroes(): Observable<Hero[]> {
     return this.http.get(this.heroesUrl).map(res => {
-      return res.json().data.map(item => {
+      return res.json().map(item => {
         return new Hero(item.id, item.name);
       })
     });
@@ -25,7 +25,7 @@ export class HeroService {
 
   getHero(id: number): Observable<Hero> {
     return this.http.get(`${this.heroesUrl}/${id}`).map(res => {
-      let item = res.json().data;
+      let item = res.json();
       return new Hero(item.id, item.name);
     });
   }

@@ -10,6 +10,8 @@ export const HEROES_LOADED = '[Heroes] Loaded';
 
 export class HeroLoadAction implements Action {
   type = HERO_LOAD;
+
+  constructor(public payload: string) { }
 }
 
 export class HeroLoadedAction implements Action {

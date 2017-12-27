@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Location } from '@angular/common';
 
@@ -21,6 +21,7 @@ import * as fromRoot from './reducers';
 
 export class HeroDetailComponent {
   @Input() hero: Hero;
+  private sub: any;
 
   public hero$: Observable<Hero>;
 
@@ -32,7 +33,13 @@ export class HeroDetailComponent {
   }
 
   ngOnInit(): void {
-    this.store.dispatch(new HeroLoadAction());
+    this.sub = this.route.params.subscribe(params => {
+       this.store.dispatch(new HeroLoadAction(+params['id']));
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.sub.unsubscribe();
   }
 
   save(): void {
